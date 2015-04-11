@@ -84,21 +84,6 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
             }
 
-
-
-            /*btnLogout = (Button) findViewById(R.id.btnLogout);
-
-            btnLogout.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    userFunctions.logoutUser(getApplicationContext());
-                    Intent login = new Intent(getApplicationContext(), LoginActivity.class);
-                    login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivityForResult(login, 0);
-                    finish();
-                }
-            });*/
         } else {
             Intent login = new Intent(getApplicationContext(), LoginActivity.class);
             login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -117,6 +102,14 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
         return true;
     }
 
+    private void logout() {
+        userFunctions.logoutUser(getApplicationContext());
+        Intent login = new Intent(getApplicationContext(), LoginActivity.class);
+        login.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(login, 0);
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -125,7 +118,8 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            logout();
             return true;
         }
 
