@@ -52,6 +52,7 @@ public class RegisterActivity extends ActionBarActivity {
     private static String KEY_NAME = "name";
     private static String KEY_EMAIL = "email";
     private static String KEY_YEAR = "year";
+    private static String KEY_ROLE = "role";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +161,10 @@ public class RegisterActivity extends ActionBarActivity {
                         JSONObject json_user = json.getJSONObject("user");
 
                         userFunction.logoutUser(getApplicationContext());
-                        db.addUser(json_user.getString(KEY_NAME), json_user.getString(KEY_EMAIL), json_user.getString(KEY_YEAR));
+                        db.addUser(json_user.getString(KEY_NAME),
+                                json_user.getString(KEY_EMAIL),
+                                json_user.getString(KEY_YEAR),
+                                Integer.parseInt(json_user.getString(KEY_ROLE)));
                         db.close();
 
                         Intent dashboard = new Intent(getApplicationContext(), DashboardActivity.class);

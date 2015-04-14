@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import library.DatabaseHandler;
 import library.TabsPagerAdapter;
 import library.UserFunctions;
 
@@ -27,6 +28,8 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
 
+    int role;
+
     private String[] tabs = {"Posts", "Classmates", "Faculty", "Profile"};
 
     @Override
@@ -35,12 +38,29 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
         userFunctions = new UserFunctions();
 
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+        role = db.getRole();
+
+        db.close();
+
         if(userFunctions.isUserLoggedIn(getApplicationContext())) {
             setContentView(R.layout.activity_dashboard);
 
             viewPager = (ViewPager) findViewById(R.id.pager);
             final ActionBar actionBar = getSupportActionBar();
+
             mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
+            mAdapter.assignRole(role);
+
+            if(role == 1) {
+
+                tabs[0] = "Profile";
+                tabs[1] = "Faculty";
+                tabs[2] = "Research";
+                tabs[3] = "Posts";
+
+            }
 
             viewPager.setAdapter(mAdapter);
             actionBar.setHomeButtonEnabled(false);

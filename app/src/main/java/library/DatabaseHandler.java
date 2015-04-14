@@ -20,6 +20,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_NAME = "name";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_YEAR = "year";
+    private static final String KEY_ROLE = "role";
 
 
     public DatabaseHandler(Context context) {
@@ -33,6 +34,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE,"
+                + KEY_ROLE + " INTEGER,"
                 + KEY_YEAR + " TEXT " + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
 
@@ -46,13 +48,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public void addUser(String name, String email, String year) {
+    public void addUser(String name, String email, String year, int role) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name);
         values.put(KEY_EMAIL, email);
         values.put(KEY_YEAR, year);
+        values.put(KEY_ROLE, role);
 
         db.insert(TABLE_LOGIN, null, values);
         db.close();
@@ -104,6 +107,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return year;
+
+    }
+
+    public int getRole() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        int role = 0;
+        Cursor cursor = db.query(TABLE_LOGIN, new String[] { KEY_ROLE }, null,
+                null, null, null, null, null);;
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0) {
+            role = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return role;
 
     }
 
