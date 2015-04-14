@@ -114,18 +114,19 @@ public class LoginActivity extends ActionBarActivity {
                         finish();
                     } else {
                         Log.d("Error!", "Incorrect Username/Password");
+                        return "Incorrect Username/Password";
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return "Login Successful";
         }
 
         @Override
         protected void onPostExecute(String args) {
-
+            Toast.makeText(getApplicationContext(), args, Toast.LENGTH_LONG).show();
         }
     }
 

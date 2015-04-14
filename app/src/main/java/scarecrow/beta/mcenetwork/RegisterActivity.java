@@ -53,6 +53,7 @@ public class RegisterActivity extends ActionBarActivity {
     private static String KEY_EMAIL = "email";
     private static String KEY_YEAR = "year";
     private static String KEY_ROLE = "role";
+    private static String KEY_ERROR_MSG = "error_message";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +127,12 @@ public class RegisterActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(String... arg0) {
 
+            if(inputFullName.getText().toString().matches("") ||
+                    inputEmail.getText().toString().matches("") ||
+                    inputPassword.getText().toString().matches("")) {
+                return "Please fill all fields!";
+            }
+
             String name = inputFullName.getText().toString();
             String email = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
@@ -174,21 +181,23 @@ public class RegisterActivity extends ActionBarActivity {
 
                         finish();
                     } else {
-                        //registerErrorMsg.setText("Error Occurred During Registration");
+                        return json.getString(KEY_ERROR_MSG);
                     }
+                } else {
+                    return json.getString(KEY_ERROR_MSG);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return null;
+            return "Registered Successfully";
 
         }
 
         @Override
         protected void onPostExecute(String msg) {
 
-            Toast.makeText(context, "Registered Successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 
         }
 
