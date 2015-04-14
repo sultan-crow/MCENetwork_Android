@@ -15,6 +15,7 @@ public class UserFunctions {
 
     private static String loginURL = "http://10.0.2.2/social_network/android/user_activity.php";
     private static String registerURL = "http://10.0.2.2/social_network/android/user_activity.php";
+    private static String profileURL = "http://10.0.2.2/social_network/android/data_activity.php";
 
     /*private static String loginURL = "http://dcetech.com/sagnik/vnb/android/user_activity.php";
     private static String registerURL = "http://dcetech.com/sagnik/vnb/android/user_activity.php";
@@ -22,6 +23,7 @@ public class UserFunctions {
 
     private static String login_tag = "login";
     private static String register_tag = "register";
+    private static String profile_tag = "profile";
 
     public UserFunctions() {
         jsonParser = new JSONParser();
@@ -50,6 +52,25 @@ public class UserFunctions {
 
         JSONObject json = jsonParser.getJSONFromUrl(registerURL, params);
         return json;
+    }
+
+    public JSONObject getProfile(Context context, int role) {
+
+        DatabaseHandler db = new DatabaseHandler(context);
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("tag", profile_tag));
+        params.add(new BasicNameValuePair("email", db.getEmail()));
+        params.add(new BasicNameValuePair("role", String.valueOf(role)));
+
+        if(role == 0)
+            params.add(new BasicNameValuePair("year", db.getYear()));
+
+        db.close();
+
+        JSONObject json = jsonParser.getJSONFromUrl(profileURL, params);
+        return json;
+
     }
 
     public boolean isUserLoggedIn(Context context){

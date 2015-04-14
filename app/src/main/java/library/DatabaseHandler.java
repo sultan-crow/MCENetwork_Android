@@ -61,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public HashMap<String, String> getUserDetails(){
+    /*public HashMap<String, String> getUserDetails(){
         HashMap<String,String> user = new HashMap<String,String>();
         String selectQuery = "SELECT  * FROM " + TABLE_LOGIN;
 
@@ -79,6 +79,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
 
         return user;
+    }*/
+
+    public String getEmail() {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String email = "";
+        Cursor cursor = db.query(TABLE_LOGIN, new String[] { KEY_EMAIL }, null,
+                null, null, null, null, null);;
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0) {
+            email = cursor.getString(0);
+        }
+        cursor.close();
+        db.close();
+        return email;
+
     }
 
     public int getRowCount() {
