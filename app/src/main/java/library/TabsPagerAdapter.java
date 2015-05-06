@@ -14,6 +14,12 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     int role;
 
+    Fragment postsFragment = new PostsFragment();
+    Fragment classmatesFragment = new ClassmatesFragment();
+    Fragment facultyFragment = new FacultyFragment();
+    Fragment profileFragment = new ProfileFragment();
+    Fragment researchFragment = new ResearchFragment();
+
     public TabsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -29,26 +35,26 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
             switch (position) {
                 case 0:
-                    return new PostsFragment();
+                    return postsFragment;
                 case 1:
-                    return new ClassmatesFragment();
+                    return classmatesFragment;
                 case 2:
-                    return new FacultyFragment();
+                    return facultyFragment;
                 case 3:
-                    return new ProfileFragment();
+                    return profileFragment;
             }
         }
 
         else {
             switch (position) {
                 case 0:
-                    return new ProfileFragment();
+                    return postsFragment;
                 case 1:
-                    return new FacultyFragment();
+                    return facultyFragment;
                 case 2:
-                    return new ResearchFragment();
+                    return researchFragment;
                 case 3:
-                    return new PostsFragment();
+                    return profileFragment;
             }
         }
 

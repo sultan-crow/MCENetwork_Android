@@ -41,6 +41,24 @@ public class ProfileFragment extends Fragment {
     TextView qualification_field;
     ImageView image_field;
 
+    private String KEY_EMAIL = "email";
+    private String KEY_NAME = "name";
+    private String KEY_GENDER = "gender";
+    private String KEY_DOB = "dob";
+    private String KEY_PICTURE = "picture";
+    private String KEY_YEAR = "year";
+    private String KEY_DESIGNATION = "designation";
+    private String KEY_QUALIFICATION = "qualification";
+
+    String name = "";
+    String email = "";
+    String dob = "";
+    String year = "";
+    String gender = "Male";
+    String designation = "";
+    String qualification = "";
+    String url = "";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -48,8 +66,6 @@ public class ProfileFragment extends Fragment {
         DatabaseHandler db = new DatabaseHandler(getActivity());
 
         role = db.getRole();
-
-        db.close();
 
         View rootView = null;
 
@@ -67,91 +83,55 @@ public class ProfileFragment extends Fragment {
         qualification_field = (TextView) rootView.findViewById(R.id.qualification);
         image_field = (ImageView) rootView.findViewById(R.id.picture);
 
-        new getProfile().execute();
+        try {
+            JSONObject json = new JSONObject(db.getJSON());
+            JSONObject user = json.getJSONObject("user");
+
+            name = user.getString(KEY_NAME);
+            email = user.getString(KEY_EMAIL);
+            dob = user.getString(KEY_DOB);
+            url = user.getString(KEY_PICTURE);
+
+            if(user.getString(KEY_GENDER).equals("f"))
+                gender = "Female";
+
+            if(role == 0) {
+
+                year = user.getString(KEY_YEAR);
+
+            } else {
+
+                designation = user.getString(KEY_DESIGNATION);
+                qualification = user.getString(KEY_QUALIFICATION);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        name_field.setText(name);
+        dob_field.setText("Born on: " + dob);
+        gender_field.setText(gender);
+        email_field.setText(email);
+
+        if(role == 0)
+            year_field.setText(year);
+        else {
+
+            designation_field.setText(designation);
+            qualification_field.setText("Qualification: " + qualification);
+
+        }
+
+        db.close();
 
         return rootView;
 
     }
 
-    class getProfile extends AsyncTask<String, String, String> {
+}
 
-        private String KEY_EMAIL = "email";
-        private String KEY_NAME = "name";
-        private String KEY_GENDER = "gender";
-        private String KEY_DOB = "dob";
-        private String KEY_PICTURE = "picture";
-        private String KEY_YEAR = "year";
-        private String KEY_DESIGNATION = "designation";
-        private String KEY_QUALIFICATION = "qualification";
-        private String KEY_SUCCESS = "success";
-        private String KEY_ERROR_MSG = "error_message";
-
-        UserFunctions userFunctions;
-
-        int error;
-
-        private ProgressDialog pDialog;
-
-        String name = "";
-        String email = "";
-        String dob = "";
-        String year = "";
-        String gender = "Male";
-        String designation = "";
-        String qualification = "";
-        String url = "";
-
-        Bitmap profile_pic = null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(getActivity());
-            //pDialog.setMessage("Fetching Notices ...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(true);
-            pDialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-
-            userFunctions = new UserFunctions();
-            JSONObject json = userFunctions.getProfile(getActivity(), role);
-
-            error = 1;
-
-            try {
-
-                if(json.getString(KEY_SUCCESS) != null) {
-
-                    String res = json.getString(KEY_SUCCESS);
-
-                    if(Integer.parseInt(res) == 1) {
-
-                        JSONObject user = json.getJSONObject("user");
-                        error = 0;
-
-                        name = user.getString(KEY_NAME);
-                        email = user.getString(KEY_EMAIL);
-                        dob = user.getString(KEY_DOB);
-                        url = user.getString(KEY_PICTURE);
-
-                        if(user.getString(KEY_GENDER).equals("f"))
-                            gender = "Female";
-
-                        if(role == 0) {
-
-                            year = user.getString(KEY_YEAR);
-
-                        } else {
-
-                            designation = user.getString(KEY_DESIGNATION);
-                            qualification = user.getString(KEY_QUALIFICATION);
-
-                        }
-
-                        if(!url.matches("")) {
+/*if(!url.matches("")) {
 
                             URL urlConnection = new URL(url);
                             HttpURLConnection connection = (HttpURLConnection) urlConnection
@@ -162,52 +142,8 @@ public class ProfileFragment extends Fragment {
                             profile_pic = BitmapFactory.decodeStream(input);
 
 
-                        }
+                        }*/
 
-                    } else {
-                        return "Some problem occurred while fetching data";
-                    }
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String msg) {
-
-            pDialog.dismiss();
-
-            if(error == 1)
-                Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
-            else {
-
-                name_field.setText(name);
-                dob_field.setText("Born on: " + dob);
-                gender_field.setText(gender);
-                email_field.setText(email);
-
-                if(role == 0)
-                    year_field.setText(year);
-                else {
-
-                    designation_field.setText(designation);
-                    qualification_field.setText("Qualification: " + qualification);
-
-                }
-
-                if(profile_pic != null) {
+/*if(profile_pic != null) {
                     image_field.setImageBitmap(profile_pic);
-                }
-            }
-        }
-    }
-
-}
+                }*/

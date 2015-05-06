@@ -15,12 +15,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "mcen";
     private static final String TABLE_LOGIN = "login";
+    private static final String TABLE_JSON = "json_table";
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_YEAR = "year";
     private static final String KEY_ROLE = "role";
+    private static final String KEY_JSON = "json";
 
 
     public DatabaseHandler(Context context) {
@@ -36,7 +38,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_EMAIL + " TEXT UNIQUE,"
                 + KEY_ROLE + " INTEGER,"
                 + KEY_YEAR + " TEXT " + ")";
+
+        String CREATE_JSON_TABLE = "CREATE TABLE " + TABLE_JSON + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_JSON + " TEXT " + ")";
+
         db.execSQL(CREATE_LOGIN_TABLE);
+        db.execSQL(CREATE_JSON_TABLE);
 
     }
 
@@ -44,6 +52,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_JSON);
         onCreate(db);
 
     }
@@ -58,28 +67,61 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_ROLE, role);
 
         db.insert(TABLE_LOGIN, null, values);
+
+        values = new ContentValues();
+        values.put(KEY_ID, 1);
+        values.put(KEY_JSON, "");
+
+        db.insert(TABLE_JSON, null, values);
+
         db.close();
     }
 
-    /*public HashMap<String, String> getUserDetails(){
-        HashMap<String,String> user = new HashMap<String,String>();
-        String selectQuery = "SELECT  * FROM " + TABLE_LOGIN;
+    public void putJSON(String json) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_JSON, json);
+
+        db.update(TABLE_JSON, values, KEY_ID + "=" + 1, null);
+        db.close();
+    }
+
+    public String getJSON() {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
+        String json = "";
+        Cursor cursor = db.query(TABLE_JSON, new String[] { KEY_JSON }, null,
+                null, null, null, null, null);
         cursor.moveToFirst();
-        if(cursor.getCount() > 0){
-            user.put("name", cursor.getString(1));
-            user.put("email", cursor.getString(2));
-            user.put("year", cursor.getString(3));
-            user.put("uid", cursor.getString(4));
+        if(cursor.getCount() > 0) {
+            json = cursor.getString(0);
         }
         cursor.close();
         db.close();
+        return json;
 
-        return user;
-    }*/
+    }
+
+    public boolean checkJSON() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String json = "";
+        Cursor cursor = db.query(TABLE_JSON, new String[] { KEY_JSON }, null,
+                null, null, null, null, null);
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0) {
+            json = cursor.getString(0);
+        }
+        cursor.close();
+
+        if(json.length() < 2) {
+            db.close();
+            return false;
+        }
+        db.close();
+        return true;
+    }
 
     public String getEmail() {
 
@@ -142,10 +184,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public void resetTable_Login(){
+    public void resetTables(){
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.delete(TABLE_LOGIN, null, null);
+        db.delete(TABLE_JSON, null, null);
         db.close();
     }
 

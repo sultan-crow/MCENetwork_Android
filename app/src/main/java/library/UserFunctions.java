@@ -85,7 +85,7 @@ public class UserFunctions {
 
     public boolean logoutUser(Context context){
         DatabaseHandler db = new DatabaseHandler(context);
-        db.resetTable_Login();
+        db.resetTables();
         db.close();
         return true;
     }

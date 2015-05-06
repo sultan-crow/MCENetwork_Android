@@ -55,10 +55,10 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
             if(role == 1) {
 
-                tabs[0] = "Profile";
+                tabs[0] = "Posts";
                 tabs[1] = "Faculty";
                 tabs[2] = "Research";
-                tabs[3] = "Posts";
+                tabs[3] = "Profile";
 
             }
 
@@ -68,7 +68,7 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
             for (String tabName : tabs) {
                 actionBar.addTab(actionBar.newTab().setText(tabName)
-                .setTabListener(this));
+                        .setTabListener(this));
             }
 
             viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -161,5 +161,13 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
     @Override
     public void onTabReselected(ActionBar.Tab tab, android.support.v4.app.FragmentTransaction fragmentTransaction) {
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onStop();
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db.putJSON("");
+        db.close();
     }
 }
