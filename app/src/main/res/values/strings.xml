@@ -12,6 +12,7 @@
     <string name="welcome">Welcome</string>
     <string name="login_big">LOGIN</string>
     <string name="email">Email</string>
+    <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="No_Account">I don\'t have account. Register Me!</string>

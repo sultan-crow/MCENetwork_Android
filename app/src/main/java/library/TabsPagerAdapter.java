@@ -14,12 +14,6 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     int role;
 
-    Fragment postsFragment = new PostsFragment();
-    Fragment classmatesFragment = new ClassmatesFragment();
-    Fragment facultyFragment = new FacultyFragment();
-    Fragment profileFragment = new ProfileFragment();
-    Fragment researchFragment = new ResearchFragment();
-
     public TabsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -35,26 +29,34 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
             switch (position) {
                 case 0:
-                    return postsFragment;
+                    return new PostsFragment();
                 case 1:
-                    return classmatesFragment;
+                    return new ClassmatesFragment();
                 case 2:
-                    return facultyFragment;
+                    return new FacultyFragment();
                 case 3:
-                    return profileFragment;
+                    return new ProfileFragment();
             }
         }
 
         else {
             switch (position) {
                 case 0:
-                    return postsFragment;
+                    return new PostsFragment();
                 case 1:
-                    return facultyFragment;
+                    return new PostsFragment();
                 case 2:
-                    return researchFragment;
+                    return new PostsFragment();
                 case 3:
-                    return profileFragment;
+                    return new PostsFragment();
+                case 4:
+                    return new PostsFragment();
+                case 5:
+                    return new FacultyFragment();
+                case 6:
+                    return new ResearchFragment();
+                case 7:
+                    return new ProfileFragment();
             }
         }
 
@@ -64,6 +66,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return 4;
+
+        if(role == 0)
+            return 4;
+        else
+            return 8;
+
     }
 }

@@ -19,6 +19,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_USERNAME = "username";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_YEAR = "year";
     private static final String KEY_ROLE = "role";
@@ -35,6 +36,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_LOGIN + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
+                + KEY_USERNAME + " TEXT,"
                 + KEY_EMAIL + " TEXT UNIQUE,"
                 + KEY_ROLE + " INTEGER,"
                 + KEY_YEAR + " TEXT " + ")";
@@ -57,12 +59,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public void addUser(String name, String email, String year, int role) {
+    public void addUser(String name, String email, String username, String year, int role) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, name);
         values.put(KEY_EMAIL, email);
+        values.put(KEY_USERNAME, username);
         values.put(KEY_YEAR, year);
         values.put(KEY_ROLE, role);
 
@@ -123,19 +126,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return true;
     }
 
-    public String getEmail() {
+    public String getUsername() {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String email = "";
-        Cursor cursor = db.query(TABLE_LOGIN, new String[] { KEY_EMAIL }, null,
+        String username = "";
+        Cursor cursor = db.query(TABLE_LOGIN, new String[] { KEY_USERNAME }, null,
                 null, null, null, null, null);;
         cursor.moveToFirst();
         if(cursor.getCount() > 0) {
-            email = cursor.getString(0);
+            username = cursor.getString(0);
         }
         cursor.close();
         db.close();
-        return email;
+        return username;
 
     }
 

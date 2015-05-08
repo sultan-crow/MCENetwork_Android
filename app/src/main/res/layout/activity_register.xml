@@ -40,6 +40,18 @@
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress" />
 
+        <!--  Username Label -->
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/username" />
+        <!--  Username TextField -->
+        <EditText
+            android:id="@+id/registerUsername"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress" />
+
         <!--  Password Label -->
         <TextView
             android:layout_width="fill_parent"

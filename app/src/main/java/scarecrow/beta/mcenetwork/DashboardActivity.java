@@ -30,7 +30,7 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
     int role;
 
-    private String[] tabs = {"Posts", "Classmates", "Faculty", "Profile"};
+    private String[] tabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +55,24 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
             if(role == 1) {
 
+                tabs = new String[8];
+
+                tabs[0] = "Faculty Posts";
+                tabs[1] = "Fourth Year";
+                tabs[2] = "Third Year";
+                tabs[3] = "Second Year";
+                tabs[4] = "First Year";
+                tabs[5] = "Faculty";
+                tabs[6] = "Research";
+                tabs[7] = "Profile";
+
+            } else {
+
+                tabs = new String[4];
+
                 tabs[0] = "Posts";
-                tabs[1] = "Faculty";
-                tabs[2] = "Research";
+                tabs[1] = "Classmates";
+                tabs[2] = "Faculty";
                 tabs[3] = "Profile";
 
             }

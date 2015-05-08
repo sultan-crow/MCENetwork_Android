@@ -34,6 +34,7 @@ public class LoginActivity extends ActionBarActivity {
     private static String KEY_SUCCESS = "success";
     private static String KEY_NAME = "name";
     private static String KEY_EMAIL = "email";
+    private static String KEY_USERNAME = "username";
     private static String KEY_YEAR = "year";
     private static String KEY_ROLE = "role";
 
@@ -102,6 +103,7 @@ public class LoginActivity extends ActionBarActivity {
                         userFunction.logoutUser(getApplicationContext());
                         db.addUser(json_user.getString(KEY_NAME),
                                 json_user.getString(KEY_EMAIL),
+                                json_user.getString(KEY_USERNAME),
                                 json_user.getString(KEY_YEAR),
                                 Integer.parseInt(json_user.getString(KEY_ROLE)));
                         db.close();

@@ -35,6 +35,7 @@ public class RegisterActivity extends ActionBarActivity {
     Button btnLinkToLogin;
     EditText inputFullName;
     EditText inputEmail;
+    EditText inputUsername;
     EditText inputPassword;
     Spinner inputYear;
     TextView registerErrorMsg;
@@ -51,6 +52,7 @@ public class RegisterActivity extends ActionBarActivity {
     private static String KEY_SUCCESS = "success";
     private static String KEY_NAME = "name";
     private static String KEY_EMAIL = "email";
+    private static String KEY_USERNAME = "username";
     private static String KEY_YEAR = "year";
     private static String KEY_ROLE = "role";
     private static String KEY_ERROR_MSG = "error_message";
@@ -63,6 +65,7 @@ public class RegisterActivity extends ActionBarActivity {
         // Importing all assets like buttons, text fields
         inputFullName = (EditText) findViewById(R.id.registerName);
         inputEmail = (EditText) findViewById(R.id.registerEmail);
+        inputUsername = (EditText) findViewById(R.id.registerUsername);
         inputPassword = (EditText) findViewById(R.id.registerPassword);
         inputYear = (Spinner) findViewById(R.id.registerYear);
         btnRegister = (Button) findViewById(R.id.btnRegister);
@@ -129,12 +132,14 @@ public class RegisterActivity extends ActionBarActivity {
 
             if(inputFullName.getText().toString().matches("") ||
                     inputEmail.getText().toString().matches("") ||
+                    inputUsername.getText().toString().matches("") ||
                     inputPassword.getText().toString().matches("")) {
                 return "Please fill all fields!";
             }
 
             String name = inputFullName.getText().toString();
             String email = inputEmail.getText().toString();
+            String username = inputUsername.getText().toString();
             String password = inputPassword.getText().toString();
             String year = inputYear.getSelectedItem().toString();
             UserFunctions userFunction = new UserFunctions();
@@ -157,7 +162,7 @@ public class RegisterActivity extends ActionBarActivity {
             }
             Log.d("RegisterActivity", "AsyncTask completed: " + msg);
 
-            JSONObject json = userFunction.registerUser(name, email, password, regId, year);
+            JSONObject json = userFunction.registerUser(name, email, username, password, regId, year);
 
             try {
                 if (json.getString(KEY_SUCCESS) != null) {
@@ -170,6 +175,7 @@ public class RegisterActivity extends ActionBarActivity {
                         userFunction.logoutUser(getApplicationContext());
                         db.addUser(json_user.getString(KEY_NAME),
                                 json_user.getString(KEY_EMAIL),
+                                json_user.getString(KEY_USERNAME),
                                 json_user.getString(KEY_YEAR),
                                 Integer.parseInt(json_user.getString(KEY_ROLE)));
                         db.close();

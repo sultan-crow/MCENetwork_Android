@@ -40,12 +40,13 @@ public class UserFunctions {
         return json;
     }
 
-    public JSONObject registerUser(String name, String email, String password, String regId, String year){
+    public JSONObject registerUser(String name, String email, String username, String password, String regId, String year){
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", register_tag));
         params.add(new BasicNameValuePair("name", name));
         params.add(new BasicNameValuePair("email", email));
+        params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("password", password));
         params.add(new BasicNameValuePair("regId", regId));
         params.add(new BasicNameValuePair("year", year));
@@ -60,7 +61,7 @@ public class UserFunctions {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", profile_tag));
-        params.add(new BasicNameValuePair("email", db.getEmail()));
+        params.add(new BasicNameValuePair("username", db.getUsername()));
         params.add(new BasicNameValuePair("role", String.valueOf(role)));
 
         if(role == 0)
