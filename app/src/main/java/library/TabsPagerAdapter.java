@@ -12,14 +12,17 @@ import scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments.ResearchFra
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
 
-    int role;
+    int role, year;
 
     public TabsPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public void assignRole(int mRole) {
+    public void assignData(int mRole, int mYear) {
+
         role = mRole;
+        year = mYear;
+
     }
 
     @Override
@@ -29,7 +32,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
             switch (position) {
                 case 0:
-                    return new PostsFragment();
+                    return new PostsFragment(year);
                 case 1:
                     return new ClassmatesFragment();
                 case 2:
@@ -42,15 +45,15 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         else {
             switch (position) {
                 case 0:
-                    return new PostsFragment();
+                    return new PostsFragment(5);
                 case 1:
-                    return new PostsFragment();
+                    return new PostsFragment(4);
                 case 2:
-                    return new PostsFragment();
+                    return new PostsFragment(3);
                 case 3:
-                    return new PostsFragment();
+                    return new PostsFragment(2);
                 case 4:
-                    return new PostsFragment();
+                    return new PostsFragment(1);
                 case 5:
                     return new FacultyFragment();
                 case 6:

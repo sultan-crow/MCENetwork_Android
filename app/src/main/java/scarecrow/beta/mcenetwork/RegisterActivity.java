@@ -185,7 +185,6 @@ public class RegisterActivity extends ActionBarActivity {
                         dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(dashboard);
 
-                        finish();
                     } else {
                         return json.getString(KEY_ERROR_MSG);
                     }

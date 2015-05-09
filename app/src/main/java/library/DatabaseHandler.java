@@ -24,6 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_YEAR = "year";
     private static final String KEY_ROLE = "role";
     private static final String KEY_JSON = "json";
+    private static final String KEY_CHECK = "checker";
 
 
     public DatabaseHandler(Context context) {
@@ -43,6 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_JSON_TABLE = "CREATE TABLE " + TABLE_JSON + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_CHECK + " INTEGER,"
                 + KEY_JSON + " TEXT " + ")";
 
         db.execSQL(CREATE_LOGIN_TABLE);
@@ -73,6 +75,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         values = new ContentValues();
         values.put(KEY_ID, 1);
+        values.put(KEY_CHECK, 0);
         values.put(KEY_JSON, "");
 
         db.insert(TABLE_JSON, null, values);
@@ -85,9 +88,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_JSON, json);
+        values.put(KEY_CHECK, 1);
 
         db.update(TABLE_JSON, values, KEY_ID + "=" + 1, null);
         db.close();
+    }
+
+    public void uncheckJSON() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_CHECK, 0);
+
+        db.update(TABLE_JSON, values, KEY_ID + "=" + 1, null);
+        db.close();
+
     }
 
     public String getJSON() {
@@ -109,20 +125,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public boolean checkJSON() {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String json = "";
-        Cursor cursor = db.query(TABLE_JSON, new String[] { KEY_JSON }, null,
+        int check = 0;
+        Cursor cursor = db.query(TABLE_JSON, new String[] { KEY_CHECK }, null,
                 null, null, null, null, null);
         cursor.moveToFirst();
         if(cursor.getCount() > 0) {
-            json = cursor.getString(0);
+            check = cursor.getInt(0);
         }
         cursor.close();
-
-        if(json.length() < 2) {
-            db.close();
-            return false;
-        }
         db.close();
+
+        if(check == 0)
+            return false;
+
         return true;
     }
 
@@ -155,15 +170,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
-    public String getYear() {
+    public int getYear() {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String year = "";
+        int year = 0;
         Cursor cursor = db.query(TABLE_LOGIN, new String[] { KEY_YEAR }, null,
                 null, null, null, null, null);;
         cursor.moveToFirst();
         if(cursor.getCount() > 0) {
-            year = cursor.getString(0);
+            year = cursor.getInt(0);
         }
         cursor.close();
         db.close();

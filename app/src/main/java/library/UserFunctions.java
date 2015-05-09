@@ -65,7 +65,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("role", String.valueOf(role)));
 
         if(role == 0)
-            params.add(new BasicNameValuePair("year", db.getYear()));
+            params.add(new BasicNameValuePair("year", String.valueOf(db.getYear())));
 
         db.close();
 

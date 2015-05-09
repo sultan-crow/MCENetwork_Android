@@ -28,7 +28,7 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
 
-    int role;
+    int role, year;
 
     private String[] tabs;
 
@@ -38,9 +38,14 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
 
         userFunctions = new UserFunctions();
 
+        year = 5;
+
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
         role = db.getRole();
+
+        if(role == 0)
+            year = db.getYear();
 
         db.close();
 
@@ -51,7 +56,7 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
             final ActionBar actionBar = getSupportActionBar();
 
             mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
-            mAdapter.assignRole(role);
+            mAdapter.assignData(role, year);
 
             if(role == 1) {
 
@@ -182,7 +187,7 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
     protected void onPause() {
         super.onStop();
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.putJSON("");
+        db.uncheckJSON();
         db.close();
     }
 }

@@ -113,7 +113,6 @@ public class LoginActivity extends ActionBarActivity {
                         dashboard.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(dashboard);
 
-                        finish();
                     } else {
                         Log.d("Error!", "Incorrect Username/Password");
                         return "Incorrect Username/Password";
