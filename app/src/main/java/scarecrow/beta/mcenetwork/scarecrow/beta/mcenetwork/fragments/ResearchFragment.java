@@ -1,5 +1,6 @@
 package scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import org.json.JSONObject;
 
 import library.DatabaseHandler;
 import scarecrow.beta.mcenetwork.R;
+import scarecrow.beta.mcenetwork.ResearchActivity;
 
 
 public class ResearchFragment extends Fragment {
@@ -36,7 +38,7 @@ public class ResearchFragment extends Fragment {
         try {
 
             JSONObject json = new JSONObject(db.getJSON());
-            JSONArray research = json.getJSONArray("research");
+            final JSONArray research = json.getJSONArray("research");
 
             if(research.length() > 0) {
 
@@ -54,9 +56,15 @@ public class ResearchFragment extends Fragment {
                 research_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getActivity(),
-                                "You clicked item no." + position,
-                                Toast.LENGTH_SHORT).show();
+                        String research_id = "";
+                        try {
+                            research_id = research.getJSONObject(position).getString("r_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Intent research_intent = new Intent(getActivity(), ResearchActivity.class);
+                        research_intent.putExtra("id", research_id);
+                        startActivity(research_intent);
                     }
                 });
 

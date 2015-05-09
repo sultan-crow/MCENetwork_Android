@@ -1,6 +1,7 @@
 package scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import library.TwoLineAdapter;
 import library.TwoLineStructure;
 import library.UniqueFunctions;
 import library.UserFunctions;
+import scarecrow.beta.mcenetwork.PostActivity;
 import scarecrow.beta.mcenetwork.R;
 
 
@@ -76,7 +78,7 @@ public class PostsFragment extends Fragment {
         try {
 
             JSONObject post;
-            JSONArray posts;
+            final JSONArray posts;
             String title, author, time;
 
             if(role == 0)
@@ -106,9 +108,16 @@ public class PostsFragment extends Fragment {
                 post_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getActivity(),
-                                "You clicked item no." + position,
-                                Toast.LENGTH_SHORT).show();
+
+                        String post_id = "";
+                        try {
+                            post_id = posts.getJSONObject(position).getString("post_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Intent post_intent = new Intent(getActivity(), PostActivity.class);
+                        post_intent.putExtra("id", post_id);
+                        startActivity(post_intent);
                     }
                 });
 

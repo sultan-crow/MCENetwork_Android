@@ -1,5 +1,6 @@
 package scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import org.json.JSONObject;
 import library.DatabaseHandler;
 import library.TwoLineAdapter;
 import library.TwoLineStructure;
+import scarecrow.beta.mcenetwork.PostActivity;
+import scarecrow.beta.mcenetwork.ProfileActivity;
 import scarecrow.beta.mcenetwork.R;
 
 
@@ -23,6 +26,7 @@ public class FacultyFragment extends Fragment {
 
     TwoLineStructure[] faculty_data;
     ListView faculty_list;
+    int role;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,9 +37,11 @@ public class FacultyFragment extends Fragment {
         faculty_list = (ListView) rootView.findViewById(R.id.faculty_list);
         DatabaseHandler db = new DatabaseHandler(getActivity());
 
+        role = db.getRole();
+
         try {
             JSONObject json = new JSONObject(db.getJSON());
-            JSONArray faculty = json.getJSONArray("faculty");
+            final JSONArray faculty = json.getJSONArray("faculty");
             String name, designation;
             JSONObject faculty_row;
 
@@ -58,9 +64,16 @@ public class FacultyFragment extends Fragment {
                 faculty_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getActivity(),
-                                "You clicked item no." + position,
-                                Toast.LENGTH_SHORT).show();
+                        String faculty_id = "";
+                        try {
+                            faculty_id = faculty.getJSONObject(position).getString("u_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Intent profile_intent = new Intent(getActivity(), ProfileActivity.class);
+                        profile_intent.putExtra("id", faculty_id);
+                        profile_intent.putExtra("role", String.valueOf(role));
+                        startActivity(profile_intent);
                     }
                 });
 

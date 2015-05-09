@@ -1,5 +1,6 @@
 package scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments;
 
+import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -16,12 +17,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import library.DatabaseHandler;
+import scarecrow.beta.mcenetwork.PostActivity;
+import scarecrow.beta.mcenetwork.ProfileActivity;
 import scarecrow.beta.mcenetwork.R;
 
 
 public class ClassmatesFragment extends Fragment {
 
     ListView classmates_list;
+    int role;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -33,12 +37,13 @@ public class ClassmatesFragment extends Fragment {
 
         DatabaseHandler db = new DatabaseHandler(getActivity());
 
+        role = db.getRole();
         String[] students;
 
         try {
 
             JSONObject json = new JSONObject(db.getJSON());
-            JSONArray classmates = json.getJSONArray("classmates");
+            final JSONArray classmates = json.getJSONArray("classmates");
 
             if(classmates.length() > 0) {
 
@@ -56,9 +61,16 @@ public class ClassmatesFragment extends Fragment {
                 classmates_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        Toast.makeText(getActivity(),
-                                "You clicked item no." + position,
-                                Toast.LENGTH_SHORT).show();
+                        String classmate_id = "";
+                        try {
+                            classmate_id = classmates.getJSONObject(position).getString("u_id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Intent profile_intent = new Intent(getActivity(), ProfileActivity.class);
+                        profile_intent.putExtra("id", classmate_id);
+                        profile_intent.putExtra("role", "0");
+                        startActivity(profile_intent);
                     }
                 });
 
