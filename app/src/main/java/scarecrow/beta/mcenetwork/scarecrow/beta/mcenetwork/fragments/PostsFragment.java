@@ -159,8 +159,7 @@ public class PostsFragment extends Fragment {
         protected String doInBackground(String... params) {
 
             userFunctions = new UserFunctions();
-            json = userFunctions.getProfile(getActivity(), role);
-            int error = 0;
+            json = userFunctions.getUserData(getActivity(), role);
 
             try {
                 if(json.getInt(KEY_SUCCESS) != 1) {

@@ -11,6 +11,15 @@
         android:orientation="vertical"
         tools:context="scarecrow.beta.mcenetwork.PostActivity">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+
+        </LinearLayout>
+
         <TextView android:id="@+id/title"
             android:text=""
             android:textStyle="bold"
