@@ -23,11 +23,20 @@
     <string name="already_registered">Already registered. Login Me!</string>
     <string name="title_activity_notice">Notice</string>
 
-    <string-array name="array_name">
+    <string-array name="year_array">
         <item>First</item>
         <item>Second</item>
         <item>Third</item>
         <item>Fourth</item>
+    </string-array>
+
+    <string-array name="target_array">
+        <item>First Year</item>
+        <item>Second Year</item>
+        <item>Third Year</item>
+        <item>Fourth Year</item>
+        <item>Faculty</item>
+        <item>All</item>
     </string-array>
 
     <string name="date">"Date: "</string>
@@ -39,8 +48,15 @@
     <string name="faculty">Faculty</string>
     <string name="posts">Posts</string>
     <string name="research">Research</string>
-    <string name="title_activity_profile">ProfileActivity</string>
-    <string name="title_activity_post">PostActivity</string>
-    <string name="title_activity_research">ResearchActivity</string>
+    <string name="addNewPost">Add New Post</string>
+    <string name="addPost">Add Post</string>
+    <string name="title">Post Title</string>
+    <string name="body">Post Body</string>
+    <string name="target">Post For</string>
+    <string name="post">Post</string>
+    <string name="title_activity_profile">Profile</string>
+    <string name="title_activity_post">Post</string>
+    <string name="title_activity_research">Research</string>
+    <string name="title_activity_post_add">Add New Post</string>
 
 </resources>

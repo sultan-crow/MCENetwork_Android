@@ -10,33 +10,55 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import library.UniqueFunctions;
+import library.DatabaseHandler;
 import library.UserFunctions;
 
 
-public class PostActivity extends ActionBarActivity {
+public class PostAddActivity extends ActionBarActivity {
 
-    String id;
-    TextView title_textview, text_textview, footer_textview;
+    String username;
+    int role;
+
+    TextView spinner_text;
+    Spinner spinner;
+
+    EditText input_title, input_body;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post);
+        setContentView(R.layout.activity_post_add);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        id = getIntent().getStringExtra("id");
+        spinner = (Spinner) findViewById(R.id.target);
+        spinner_text = (TextView) findViewById(R.id.spinner_text);
+        input_title = (EditText) findViewById(R.id.title);
+        input_body = (EditText) findViewById(R.id.body);
 
-        title_textview = (TextView) findViewById(R.id.title);
-        text_textview = (TextView) findViewById(R.id.text);
-        footer_textview = (TextView) findViewById(R.id.footer);
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+        role = db.getRole();
+        username = db.getUsername();
+
+        if(role == 1) {
+
+            spinner_text.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.VISIBLE);
+
+        }
+    }
+
+    public void buttonClick(View v) {
 
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -52,7 +74,7 @@ public class PostActivity extends ActionBarActivity {
 
         } else {
 
-            new LoadPost().execute();
+            new SubmitPost().execute();
 
         }
 
@@ -62,7 +84,7 @@ public class PostActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_post, menu);
+        getMenuInflater().inflate(R.menu.menu_post_add, menu);
         return true;
     }
 
@@ -81,11 +103,13 @@ public class PostActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class LoadPost extends AsyncTask<String, String, String> {
+    class LoadProfile extends AsyncTask<String, String, String> {
 
         ProgressDialog pDialog;
         UserFunctions userFunctions;
         JSONObject json;
+
+        String title, body, year;
 
         private String KEY_SUCCESS = "success";
         private String KEY_ERROR_MSG = "";
@@ -95,8 +119,8 @@ public class PostActivity extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(PostActivity.this);
-            pDialog.setMessage("Fetching Post ...");
+            pDialog = new ProgressDialog(PostAddActivity.this);
+            pDialog.setMessage("Fetching Profile Data ...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -106,7 +130,15 @@ public class PostActivity extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
             userFunctions = new UserFunctions();
-            json = userFunctions.getPost(id);
+
+            title = input_title.getText().toString();
+            body = input_body.getText().toString();
+
+            if(role == 1)
+                year = spinner.getSelectedItem().toString();
+            else
+                //year =
+            json = userFunctions.submitPost();
 
             try {
                 if(json.getInt(KEY_SUCCESS) != 1) {
@@ -124,27 +156,17 @@ public class PostActivity extends ActionBarActivity {
         protected void onPostExecute(String params) {
 
             pDialog.dismiss();
-
             if(error == 1) {
                 Toast.makeText(getApplicationContext(), params, Toast.LENGTH_LONG).show();
+            } else if(error == 2) {
+                Toast.makeText(getApplicationContext(),
+                        "Please fill all fields.",
+                        Toast.LENGTH_LONG).show();
             } else {
-                try {
-
-                    JSONObject post = json.getJSONObject("post");
-                    String title = post.getString("title");
-                    String author = post.getString("author");
-                    String text = post.getString("text");
-                    String date = new UniqueFunctions()
-                            .getFormattedDateTime(post.getString("date"),
-                                    post.getString("time"));
-
-                    title_textview.setText(title);
-                    text_textview.setText(text);
-                    footer_textview.setText(author + " " + date);
-
-                } catch (JSONException e) {
-                    Log.d("Error!", e.toString());
-                }
+                Toast.makeText(getApplicationContext(),
+                        "Post has been posted successfully.",
+                        Toast.LENGTH_LONG).show();
+                finish();
             }
         }
     }

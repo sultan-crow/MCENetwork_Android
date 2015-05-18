@@ -8,65 +8,66 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="10dip" >
-        <!--  View Title Label -->
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dip"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/login_big"
+            android:text="@string/addNewPost"
             android:textSize="25sp"
             android:textStyle="bold" />
-        <!--  Email Label -->
+
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="20dp"
-            android:text="@string/emailoruname" />
-        <!--  Email TextField -->
+            android:text="@string/title" />
+
         <EditText
-            android:id="@+id/loginEmail"
+            android:id="@+id/title"
             android:inputType="textEmailAddress"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
-        <!--  Password Label -->
         <TextView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
-            android:text="@string/password" />
-        <!--  Password TextField -->
+            android:visibility="gone"
+            android:id="@+id/spinner_text"
+            android:text="@string/target" />
+
+        <Spinner
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dip"
+            android:visibility="gone"
+            android:entries="@array/target_array"
+            android:drawSelectorOnTop="true"
+            android:id="@+id/target" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dip"
+            android:text="@string/body" />
+
         <EditText
-            android:id="@+id/loginPassword"
+            android:id="@+id/body"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword" />
+            android:singleLine="false"
+            android:gravity="top"
+            android:lines="5"
+            android:layout_height="wrap_content" />
 
-        <!--  Error message -->
-        <TextView android:id="@+id/login_error"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dip"
-            android:textStyle="bold"/>
-
-        <!--  Login Button -->
-        <Button
+       <Button
             android:id="@+id/btnLogin"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dip"
-            android:text="@string/login" />
+           android:onClick="buttonClick"
+            android:text="@string/post" />
 
-        <!--  Link to Registration Screen -->
-        <Button
-            android:id="@+id/btnLinkToRegisterScreen"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dip"
-            android:background="@null"
-            android:text="@string/No_Account"
-            android:textStyle="bold" />
     </LinearLayout>
 
 </ScrollView>

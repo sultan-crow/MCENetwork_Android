@@ -158,9 +158,17 @@ public class DashboardActivity extends ActionBarActivity implements ActionBar.Ta
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
+        if(id == R.id.action_add_new_post) {
+
+            Intent i = new Intent(getApplicationContext(), PostAddActivity.class);
+            startActivity(i);
+            return true;
+
+        } else if (id == R.id.action_logout) {
+
             logout();
             return true;
+
         }
 
         return super.onOptionsItemSelected(item);

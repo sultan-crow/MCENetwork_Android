@@ -16,6 +16,8 @@ public class ResearchActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_research);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         id = getIntent().getStringExtra("id");
         Toast.makeText(getApplicationContext(),
                 "The id is: " + id,

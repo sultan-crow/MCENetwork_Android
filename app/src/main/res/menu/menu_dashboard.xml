@@ -2,6 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="scarecrow.beta.mcenetwork.DashboardActivity">
+    <item android:id="@+id/action_add_new_post" android:title="@string/addPost"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
     <item android:id="@+id/action_logout" android:title="@string/logout"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

@@ -41,6 +41,8 @@ public class ProfileActivity extends ActionBarActivity {
         else
             setContentView(R.layout.activity_profile_faculty);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         name_textview = (TextView) findViewById(R.id.name);
         gender_textview = (TextView) findViewById(R.id.gender);
         email_textview = (TextView) findViewById(R.id.email);

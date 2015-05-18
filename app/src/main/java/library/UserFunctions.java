@@ -12,12 +12,14 @@ import android.content.Context;
 public class UserFunctions {
 
     private JSONParser jsonParser;
+    private UniqueFunctions uniqueFunctions;
 
     private static String loginURL = "http://10.0.2.2/social_network/android/user_activity.php";
     private static String registerURL = "http://10.0.2.2/social_network/android/user_activity.php";
     private static String userURL = "http://10.0.2.2/social_network/android/data_activity.php";
     private static String postURL = "http://10.0.2.2/social_network/android/detailed_data.php";
     private static String profileURL = "http://10.0.2.2/social_network/android/detailed_data.php";
+    private static String addPostURL = "http://10.0.2.2/social_network/android/detailed_data.php";
 
     /*private static String loginURL = "http://dcetech.com/sagnik/vnb/android/user_activity.php";
     private static String registerURL = "http://dcetech.com/sagnik/vnb/android/user_activity.php";
@@ -27,9 +29,13 @@ public class UserFunctions {
     private static String register_tag = "register";
     private static String profile_tag = "profile";
     private static String post_tag = "post";
+    private static String add_post_tag = "add_post";
 
     public UserFunctions() {
+
         jsonParser = new JSONParser();
+        uniqueFunctions = new UniqueFunctions();
+
     }
 
     public JSONObject loginUser(String email, String password){
@@ -98,7 +104,23 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("id", id));
         params.add(new BasicNameValuePair("role", role));
 
-        JSONObject json = jsonParser.getJSONFromUrl(postURL, params);
+        JSONObject json = jsonParser.getJSONFromUrl(profileURL, params);
+
+        return json;
+
+    }
+
+    public JSONObject submitPost(String title, String body, String year, String username) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", add_post_tag));
+        params.add(new BasicNameValuePair("title", title));
+        params.add(new BasicNameValuePair("body", body));
+        params.add(new BasicNameValuePair("username", username));
+        params.add(new BasicNameValuePair("year", uniqueFunctions.getShortYear(year)));
+
+        JSONObject json = jsonParser.getJSONFromUrl(addPostURL, params);
 
         return json;
 

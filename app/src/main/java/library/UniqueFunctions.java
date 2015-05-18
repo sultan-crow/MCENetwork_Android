@@ -84,6 +84,25 @@ public class UniqueFunctions {
             return "AM";
     }
 
+    public String getShortYear(String year_long) {
+        switch (year_long) {
+            case "First Year":
+                return "1";
+            case "Second Year":
+                return "2";
+            case "Third Year":
+                return "3";
+            case "Fourth Year":
+                return "4";
+            case "Faculty":
+                return "5";
+            case "All":
+                return "12345";
+            default:
+                return "6";
+        }
+    }
+
     public String getNumberWithSubscript(String num) {
 
         switch (num) {
