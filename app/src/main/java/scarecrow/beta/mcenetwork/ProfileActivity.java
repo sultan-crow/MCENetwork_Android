@@ -25,7 +25,7 @@ public class ProfileActivity extends ActionBarActivity {
 
     String id, role;
     TextView name_textview, gender_textview, email_textview, dob_textview,
-            group_designation_textview, year_qualification_textview;
+            group_qualification_textview, year_designation_textview;
 
     ImageView imageView;
 
@@ -33,15 +33,13 @@ public class ProfileActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //if(role.equals("0"))
-            setContentView(R.layout.activity_profile_student);
-        //else
-            //setContentView(R.layout.activity_profile_faculty);
-
         id = getIntent().getStringExtra("id");
         role = getIntent().getStringExtra("role");
 
-        Log.d("Bye", String.valueOf(role.equals('0')));
+        if(role.equals("0"))
+            setContentView(R.layout.activity_profile_student);
+        else
+            setContentView(R.layout.activity_profile_faculty);
 
         name_textview = (TextView) findViewById(R.id.name);
         gender_textview = (TextView) findViewById(R.id.gender);
@@ -49,12 +47,13 @@ public class ProfileActivity extends ActionBarActivity {
         dob_textview = (TextView) findViewById(R.id.dob);
         imageView = (ImageView) findViewById(R.id.image);
 
-        /*if(role.equals("0")) {
-            group_designation_textview = (TextView) findViewById(R.id.group);
-            year_qualification_textview = (TextView) findViewById(R.id.year);
+        if(role.equals("0")) {
+            group_qualification_textview = (TextView) findViewById(R.id.group);
+            year_designation_textview = (TextView) findViewById(R.id.year);
         } else {
-            //group_designation_textview = (TextView) findViewById()
-        }*/
+            group_qualification_textview = (TextView) findViewById(R.id.qualification);
+            year_designation_textview = (TextView) findViewById(R.id.designation);
+        }
 
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -70,9 +69,6 @@ public class ProfileActivity extends ActionBarActivity {
 
         } else {
 
-            Toast.makeText(getApplicationContext(),
-                    "Role is " + role,
-                    Toast.LENGTH_SHORT);
             new LoadProfile().execute();
 
         }
@@ -109,6 +105,7 @@ public class ProfileActivity extends ActionBarActivity {
 
         private String KEY_SUCCESS = "success";
         private String KEY_ERROR_MSG = "";
+        UniqueFunctions uniqueFunctions;
 
         int error = 0;
 
@@ -144,7 +141,7 @@ public class ProfileActivity extends ActionBarActivity {
         protected void onPostExecute(String params) {
 
             pDialog.dismiss();
-
+            uniqueFunctions = new UniqueFunctions();
             if(error == 1) {
                 Toast.makeText(getApplicationContext(), params, Toast.LENGTH_LONG).show();
             } else {
@@ -159,14 +156,20 @@ public class ProfileActivity extends ActionBarActivity {
 
                     name_textview.setText(name);
                     email_textview.setText(email);
-                    dob_textview.setText(dob);
-                    gender_textview.setText(gender);
+                    dob_textview.setText("B'Day: " + uniqueFunctions.getFormattedDate(dob));
+                    gender_textview.setText(uniqueFunctions.getFullGender(gender));
 
                     if(role.equals("0")) {
 
-                        year_qualification_textview.setText(profile.getString("year"));
-                        group_designation_textview.setText(profile.getString("group"));
+                        year_designation_textview.setText("Year: " +
+                                uniqueFunctions.getNumberWithSubscript(profile.getString("year")));
+                        group_qualification_textview.setText("Group: " + profile.getString("group"));
 
+                    } else {
+                        year_designation_textview.setText(
+                                profile.getString("designation"));
+                        group_qualification_textview.setText(
+                                "Qualification: " + profile.getString("qualification"));
                     }
 
                 } catch (JSONException e) {

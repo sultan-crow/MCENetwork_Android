@@ -19,6 +19,26 @@ public class UniqueFunctions {
 
     }
 
+    public String getFormattedDate(String date) {
+
+        String day = date.substring(3, 5);
+        String month = date.substring(0, 2);
+
+        String final_date = MonthIntToString(month) + " " + day;
+
+        return final_date;
+
+    }
+
+    public String getFullGender(String gender) {
+
+        if(gender.equals("m"))
+            return "Male";
+        else
+            return "Female";
+
+    }
+
     public String MonthIntToString(String month) {
         switch(month) {
             case "01":
@@ -62,6 +82,22 @@ public class UniqueFunctions {
             return "PM";
         else
             return "AM";
+    }
+
+    public String getNumberWithSubscript(String num) {
+
+        switch (num) {
+            case "1":
+                return "1st";
+            case "2":
+                return "2nd";
+            case "3":
+                return "3rd";
+            case "4":
+                return "4th";
+            default:
+                return num + "th";
+        }
     }
 
 }

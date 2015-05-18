@@ -72,7 +72,7 @@ public class FacultyFragment extends Fragment {
                         }
                         Intent profile_intent = new Intent(getActivity(), ProfileActivity.class);
                         profile_intent.putExtra("id", faculty_id);
-                        profile_intent.putExtra("role", String.valueOf(role));
+                        profile_intent.putExtra("role", "1");
                         startActivity(profile_intent);
                     }
                 });
