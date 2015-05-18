@@ -8,6 +8,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Log;
 
 public class UserFunctions {
 
@@ -105,6 +106,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("role", role));
 
         JSONObject json = jsonParser.getJSONFromUrl(profileURL, params);
+        Log.d("Hello", json.toString());
 
         return json;
 
@@ -118,6 +120,7 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("title", title));
         params.add(new BasicNameValuePair("body", body));
         params.add(new BasicNameValuePair("username", username));
+        Log.d("Hello", year);
         params.add(new BasicNameValuePair("year", uniqueFunctions.getShortYear(year)));
 
         JSONObject json = jsonParser.getJSONFromUrl(addPostURL, params);

@@ -85,6 +85,8 @@ public class UniqueFunctions {
     }
 
     public String getShortYear(String year_long) {
+        if(year_long.length() == 1)
+            return year_long;
         switch (year_long) {
             case "First Year":
                 return "1";

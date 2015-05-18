@@ -20,12 +20,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import library.DatabaseHandler;
+import library.UniqueFunctions;
 import library.UserFunctions;
 
 
 public class PostAddActivity extends ActionBarActivity {
 
-    String username;
+    String username, year;
     int role;
 
     TextView spinner_text;
@@ -55,7 +56,8 @@ public class PostAddActivity extends ActionBarActivity {
             spinner_text.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.VISIBLE);
 
-        }
+        } else
+            year = String.valueOf(db.getYear());
     }
 
     public void buttonClick(View v) {
@@ -103,16 +105,16 @@ public class PostAddActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class LoadProfile extends AsyncTask<String, String, String> {
+    class SubmitPost extends AsyncTask<String, String, String> {
 
         ProgressDialog pDialog;
         UserFunctions userFunctions;
         JSONObject json;
 
-        String title, body, year;
+        String title, body;
 
         private String KEY_SUCCESS = "success";
-        private String KEY_ERROR_MSG = "";
+        private String KEY_ERROR_MSG = "error_message";
 
         int error = 0;
 
@@ -120,7 +122,7 @@ public class PostAddActivity extends ActionBarActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(PostAddActivity.this);
-            pDialog.setMessage("Fetching Profile Data ...");
+            pDialog.setMessage("Submitting Post...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -134,11 +136,16 @@ public class PostAddActivity extends ActionBarActivity {
             title = input_title.getText().toString();
             body = input_body.getText().toString();
 
+            if(title.matches("") || body.matches("")) {
+                error = 2;
+                return null;
+            }
+
             if(role == 1)
                 year = spinner.getSelectedItem().toString();
-            else
-                //year =
-            json = userFunctions.submitPost();
+
+            Log.e("Hello", year);
+            json = userFunctions.submitPost(title, body, year, username);
 
             try {
                 if(json.getInt(KEY_SUCCESS) != 1) {
@@ -166,7 +173,9 @@ public class PostAddActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(),
                         "Post has been posted successfully.",
                         Toast.LENGTH_LONG).show();
-                finish();
+                input_title.setText("");
+                input_body.setText("");
+                spinner.setSelection(0);
             }
         }
     }
