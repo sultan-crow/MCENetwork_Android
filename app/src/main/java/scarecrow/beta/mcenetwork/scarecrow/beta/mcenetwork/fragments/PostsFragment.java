@@ -95,7 +95,8 @@ public class PostsFragment extends Fragment {
                     post = posts.getJSONObject(i);
                     title = post.getString("post_title");
                     author = post.getString("posted_by");
-                    time = uniqueFunctions.getFormattedDateTime(post.getString("date"), post.getString("time"));
+                    time = uniqueFunctions.getFormattedDateTime(post.getString("date"),
+                            post.getString("time"));
 
                     post_list[i] = new TwoLineStructure(title, author, time);
 

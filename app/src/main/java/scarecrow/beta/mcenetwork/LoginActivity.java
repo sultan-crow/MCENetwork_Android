@@ -16,11 +16,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import library.DatabaseHandler;
 import library.UserFunctions;
+import library.config;
 
 
 public class LoginActivity extends ActionBarActivity {
@@ -30,6 +35,9 @@ public class LoginActivity extends ActionBarActivity {
     EditText inputEmail;
     EditText inputPassword;
     TextView loginErrorMsg;
+
+    GoogleCloudMessaging gcm;
+    String regId;
 
     private static String KEY_SUCCESS = "success";
     private static String KEY_NAME = "name";
@@ -82,13 +90,33 @@ public class LoginActivity extends ActionBarActivity {
 
     class AttemptLogin extends AsyncTask<String, String, String> {
 
+        String msg = "";
+
         @Override
         protected String doInBackground(String... args) {
+
             String email = inputEmail.getText().toString();
             String password = inputPassword.getText().toString();
             UserFunctions userFunction = new UserFunctions();
             JSONObject json = null;
-            json = userFunction.loginUser(email, password);
+
+            try {
+                if (gcm == null) {
+                    gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                }
+                regId = gcm.register(config.GOOGLE_PROJECT_ID);
+                Log.d("RegisterActivity", "registerInBackground - regId: "
+                        + regId);
+                msg = "Device registered, registration ID=" + regId;
+
+                //storeRegistrationId(context, regId);
+            } catch (IOException ex) {
+                msg = "Error :" + ex.getMessage();
+                Log.d("RegisterActivity", "Error: " + msg);
+            }
+            Log.d("RegisterActivity", "AsyncTask completed: " + msg);
+
+            json = userFunction.loginUser(email, password, regId);
 
             try {
                 Log.d("KK", "P");
@@ -118,6 +146,7 @@ public class LoginActivity extends ActionBarActivity {
                         return "Incorrect Username/Password";
                     }
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

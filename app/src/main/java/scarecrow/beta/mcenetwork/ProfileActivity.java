@@ -2,6 +2,7 @@ package scarecrow.beta.mcenetwork;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +27,7 @@ public class ProfileActivity extends ActionBarActivity {
 
     String id, role;
     TextView name_textview, gender_textview, email_textview, dob_textview,
-            group_qualification_textview, year_designation_textview;
+            group_qualification_textview, year_designation_textview, username_textview;
 
     ImageView imageView;
 
@@ -48,6 +50,7 @@ public class ProfileActivity extends ActionBarActivity {
         email_textview = (TextView) findViewById(R.id.email);
         dob_textview = (TextView) findViewById(R.id.dob);
         imageView = (ImageView) findViewById(R.id.image);
+        username_textview = (TextView) findViewById(R.id.username);
 
         if(role.equals("0")) {
             group_qualification_textview = (TextView) findViewById(R.id.group);
@@ -97,6 +100,16 @@ public class ProfileActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void chat(View v) {
+
+        String username = username_textview.getText().toString();
+
+        Intent i = new Intent(ProfileActivity.this, ChatActivity.class);
+        i.putExtra("sender", username);
+
+        startActivity(i);
     }
 
     class LoadProfile extends AsyncTask<String, String, String> {
@@ -155,11 +168,13 @@ public class ProfileActivity extends ActionBarActivity {
                     String gender = profile.getString("gender");
                     String dob = profile.getString("dob");
                     String pic = profile.getString("pic");
+                    String username = profile.getString("username");
 
                     name_textview.setText(name);
                     email_textview.setText(email);
                     dob_textview.setText("B'Day: " + uniqueFunctions.getFormattedDate(dob));
                     gender_textview.setText(uniqueFunctions.getFullGender(gender));
+                    username_textview.setText(username);
 
                     if(role.equals("0")) {
 

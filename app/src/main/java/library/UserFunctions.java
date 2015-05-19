@@ -15,12 +15,14 @@ public class UserFunctions {
     private JSONParser jsonParser;
     private UniqueFunctions uniqueFunctions;
 
-    private static String loginURL = "http://10.0.2.2/social_network/android/user_activity.php";
-    private static String registerURL = "http://10.0.2.2/social_network/android/user_activity.php";
-    private static String userURL = "http://10.0.2.2/social_network/android/data_activity.php";
-    private static String postURL = "http://10.0.2.2/social_network/android/detailed_data.php";
-    private static String profileURL = "http://10.0.2.2/social_network/android/detailed_data.php";
-    private static String addPostURL = "http://10.0.2.2/social_network/android/detailed_data.php";
+    private static String loginURL = "http://dcetech.com/sagnik/social_network/android/user_activity.php";
+    private static String registerURL = "http://dcetech.com/sagnik/social_network/android/user_activity.php";
+    private static String userURL = "http://dcetech.com/sagnik/social_network/android/data_activity.php";
+    private static String postURL = "http://dcetech.com/sagnik/social_network/android/detailed_data.php";
+    private static String profileURL = "http://dcetech.com/sagnik/social_network/android/detailed_data.php";
+    private static String addPostURL = "http://dcetech.com/sagnik/social_network/android/detailed_data.php";
+    private static String chatURL = "http://dcetech.com/sagnik/social_network/android/detailed_data.php";
+    private static String chatSendURL = "http://dcetech.com/sagnik/social_network/android/detailed_data.php";
 
     /*private static String loginURL = "http://dcetech.com/sagnik/vnb/android/user_activity.php";
     private static String registerURL = "http://dcetech.com/sagnik/vnb/android/user_activity.php";
@@ -31,6 +33,8 @@ public class UserFunctions {
     private static String profile_tag = "profile";
     private static String post_tag = "post";
     private static String add_post_tag = "add_post";
+    private static String chat_tag = "chat";
+    private static String chat_send_tag = "chat_send";
 
     public UserFunctions() {
 
@@ -39,12 +43,13 @@ public class UserFunctions {
 
     }
 
-    public JSONObject loginUser(String email, String password){
+    public JSONObject loginUser(String email, String password, String regId){
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("tag", login_tag));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("password", password));
+        params.add(new BasicNameValuePair("regId", regId));
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
 
         return json;
@@ -97,6 +102,35 @@ public class UserFunctions {
 
     }
 
+    public JSONObject getChats(String sender, String receiver) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", chat_tag));
+        params.add(new BasicNameValuePair("sender", sender));
+        params.add(new BasicNameValuePair("receiver", receiver));
+
+        JSONObject json = jsonParser.getJSONFromUrl(chatURL, params);
+
+        return json;
+
+    }
+
+    public JSONObject sendMessage(String sender, String receiver, String message) {
+
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("tag", chat_send_tag));
+        params.add(new BasicNameValuePair("sender", sender));
+        params.add(new BasicNameValuePair("receiver", receiver));
+        params.add(new BasicNameValuePair("message", message));
+
+        JSONObject json = jsonParser.getJSONFromUrl(chatSendURL, params);
+
+        return json;
+
+    }
+
     public JSONObject getProfile(String id, String role) {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -106,7 +140,6 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("role", role));
 
         JSONObject json = jsonParser.getJSONFromUrl(profileURL, params);
-        Log.d("Hello", json.toString());
 
         return json;
 
@@ -120,7 +153,6 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("title", title));
         params.add(new BasicNameValuePair("body", body));
         params.add(new BasicNameValuePair("username", username));
-        Log.d("Hello", year);
         params.add(new BasicNameValuePair("year", uniqueFunctions.getShortYear(year)));
 
         JSONObject json = jsonParser.getJSONFromUrl(addPostURL, params);
