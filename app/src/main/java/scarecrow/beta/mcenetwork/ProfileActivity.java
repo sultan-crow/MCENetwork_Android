@@ -108,6 +108,7 @@ public class ProfileActivity extends ActionBarActivity {
 
         Intent i = new Intent(ProfileActivity.this, ChatActivity.class);
         i.putExtra("sender", username);
+        i.putExtra("role", role);
 
         startActivity(i);
     }

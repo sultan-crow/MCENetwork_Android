@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,7 +44,7 @@ import library.UserFunctions;
 
 public class ChatActivity extends ActionBarActivity {
 
-    String sender, receiver;
+    String sender_global, receiver_global, role_sender, role_receiver;
 
     ListView list_chats;
     EditText message_edittext;
@@ -60,11 +61,13 @@ public class ChatActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
-        sender = getIntent().getStringExtra("sender");
+        sender_global = getIntent().getStringExtra("sender");
+        role_sender = getIntent().getStringExtra("role");
 
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-        receiver = db.getUsername();
+        receiver_global = db.getUsername();
+        role_receiver = String.valueOf(db.getRole());
 
         list_chats = (ListView) findViewById(R.id.list);
         message_edittext = (EditText) findViewById(R.id.chat_text);
@@ -72,6 +75,7 @@ public class ChatActivity extends ActionBarActivity {
 
         db.close();
 
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
 
@@ -159,6 +163,7 @@ public class ChatActivity extends ActionBarActivity {
     protected void onPause() {
         super.onPause();
         unregisterReceiver(chat_receiver);
+        finish();
     }
 
     private BroadcastReceiver chat_receiver = new BroadcastReceiver() {
@@ -168,9 +173,13 @@ public class ChatActivity extends ActionBarActivity {
             String sender = intent.getStringExtra("sender");
             String time = intent.getStringExtra("time");
 
-            chats.add(new TwoLineStructure(message, sender, time));
-            adapter.notifyDataSetChanged();
-            scrollToBottom();
+            if(sender.equals(sender_global)) {
+
+                chats.add(new TwoLineStructure(message, sender, time));
+                adapter.notifyDataSetChanged();
+                scrollToBottom();
+
+            }
         }
     };
 
@@ -189,7 +198,7 @@ public class ChatActivity extends ActionBarActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pDialog = new ProgressDialog(ChatActivity.this);
-            pDialog.setMessage("Fetching Conversations ...");
+            pDialog.setMessage("Fetching Conversations With " + sender_global + " ...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
             pDialog.show();
@@ -199,7 +208,7 @@ public class ChatActivity extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
             userFunctions = new UserFunctions();
-            json = userFunctions.getChats(sender, receiver);
+            json = userFunctions.getChats(sender_global, receiver_global);
             String message, sender, time;
 
             try {
@@ -244,17 +253,17 @@ public class ChatActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), params, Toast.LENGTH_LONG).show();
             } else {
 
+                adapter = new TwoLineAdapterWithList(ChatActivity.this,
+                        R.layout.twolinelist_row, sender_global, chats);
+                list_chats.setAdapter(adapter);
                 if(chats.size() > 0) {
 
-                    adapter = new TwoLineAdapterWithList(ChatActivity.this,
-                            R.layout.twolinelist_row, sender, chats);
-                    list_chats.setAdapter(adapter);
                     scrollToBottom();
 
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "There are no chats",
-                            Toast.LENGTH_SHORT);
+                            Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -277,7 +286,9 @@ public class ChatActivity extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
             userFunctions = new UserFunctions();
-            json = userFunctions.sendMessage(receiver, receiver, message_body);
+            json = userFunctions.sendMessage(receiver_global, sender_global, message_body,
+                    role_receiver, role_sender);
+
             String message, sender, date, time;
             try {
                 if (json.getInt(KEY_SUCCESS) != 1) {

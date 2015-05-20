@@ -14,6 +14,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.util.Random;
+
 import library.UniqueFunctions;
 
 public class GcmIntentService extends IntentService {
@@ -70,9 +72,10 @@ public class GcmIntentService extends IntentService {
                     String date = extras.getString("date");
                     String time = extras.getString("time");
                     String name = extras.getString("name");
+                    String role = extras.getString("role");
 
                     String formatted_time = new UniqueFunctions().getFormattedDateTime(date, time);
-                    sendNotificationForMessage(sender, content, name);
+                    sendNotificationForMessage(sender, content, name, role);
                     updateActivity(getApplicationContext(), content, sender, formatted_time);
                 }
 
@@ -96,7 +99,7 @@ public class GcmIntentService extends IntentService {
         context.sendBroadcast(intent);
     }
 
-    private void sendNotificationForMessage(String sender, String msg, String name) {
+    private void sendNotificationForMessage(String sender, String msg, String name, String role) {
         Log.d(TAG, "Preparing to send notification...: " + msg);
         mNotificationManager = (NotificationManager) this
                 .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -105,7 +108,8 @@ public class GcmIntentService extends IntentService {
 
         Intent details = new Intent(getApplicationContext(), ChatActivity.class);
         details.putExtra("sender", sender);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+        details.putExtra("role", role);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, new Random().nextInt(20000),
                 details, 0);
 
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

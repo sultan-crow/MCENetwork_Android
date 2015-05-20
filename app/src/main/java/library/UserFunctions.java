@@ -116,7 +116,8 @@ public class UserFunctions {
 
     }
 
-    public JSONObject sendMessage(String sender, String receiver, String message) {
+    public JSONObject sendMessage(String sender, String receiver, String message,
+                                  String role_sender, String role_receiver) {
 
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
@@ -124,6 +125,8 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("sender", sender));
         params.add(new BasicNameValuePair("receiver", receiver));
         params.add(new BasicNameValuePair("message", message));
+        params.add(new BasicNameValuePair("role_sender", message));
+        params.add(new BasicNameValuePair("role_receiver", message));
 
         JSONObject json = jsonParser.getJSONFromUrl(chatSendURL, params);
 
