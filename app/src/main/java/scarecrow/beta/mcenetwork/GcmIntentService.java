@@ -14,6 +14,8 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import library.UniqueFunctions;
+
 public class GcmIntentService extends IntentService {
 
     public static final int NOTIFICATION_ID = 1;
@@ -56,16 +58,71 @@ public class GcmIntentService extends IntentService {
                 }
                 Log.i(TAG, "Completed work @ " + SystemClock.elapsedRealtime());
 
-                int tag = extras.getInt("tag");
+                String tag = extras.getString("tag");
                 String content = extras.getString("content");
 
-                if(tag == 0)
+                Log.d("hello_tag", content);
+
+                if(tag.equals("post"))
                     sendNotificationForPost(content);
+                else if(tag.equals("message")) {
+                    String sender = extras.getString("sender");
+                    String date = extras.getString("date");
+                    String time = extras.getString("time");
+                    String name = extras.getString("name");
+
+                    String formatted_time = new UniqueFunctions().getFormattedDateTime(date, time);
+                    sendNotificationForMessage(sender, content, name);
+                    updateActivity(getApplicationContext(), content, sender, formatted_time);
+                }
 
                 Log.i(TAG, "Received: " + extras.toString());
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
+    }
+
+    static void updateActivity(Context context, String message,
+                               String sender, String time) {
+
+        Intent intent = new Intent("unique_name");
+
+        //put whatever data you want to send, if any
+        intent.putExtra("message", message);
+        intent.putExtra("sender", sender);
+        intent.putExtra("time", time);
+
+        //send broadcast
+        context.sendBroadcast(intent);
+    }
+
+    private void sendNotificationForMessage(String sender, String msg, String name) {
+        Log.d(TAG, "Preparing to send notification...: " + msg);
+        mNotificationManager = (NotificationManager) this
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+
+        //To be changed, pending
+
+        Intent details = new Intent(getApplicationContext(), ChatActivity.class);
+        details.putExtra("sender", sender);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
+                details, 0);
+
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        long[] vibrate = { 0, 100, 200, 300 };
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                this).setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(name)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                .setContentText(msg)
+                .setVibrate(vibrate)
+                .setAutoCancel(true)
+                .setSound(alarmSound);
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        Log.d(TAG, "Notification sent successfully.");
     }
 
 

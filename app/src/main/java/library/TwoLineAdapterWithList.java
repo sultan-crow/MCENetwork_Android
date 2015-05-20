@@ -2,6 +2,7 @@ package library;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,14 @@ public class TwoLineAdapterWithList extends ArrayAdapter<TwoLineStructure> {
     Context context;
     int layoutResourceId;
     ArrayList<TwoLineStructure> data = null;
+    String username;
 
-    public TwoLineAdapterWithList(Context context, int layoutResourceId,
+    public TwoLineAdapterWithList(Context context, int layoutResourceId, String username,
                                   ArrayList<TwoLineStructure> data) {
 
         super(context, layoutResourceId, data);
         this.context = context;
+        this.username = username;
         this.layoutResourceId = layoutResourceId;
         this.data = data;
 
@@ -56,6 +59,10 @@ public class TwoLineAdapterWithList extends ArrayAdapter<TwoLineStructure> {
         holder.txtTitle.setText(structure.title);
         holder.txtSubtext.setText(structure.subtext);
         holder.txtSubtextRight.setText(structure.subtext_right);
+
+        //if(structure.subtext.equals(username)) {
+            //holder.txtTitle.setGravity(Gravity.RIGHT);
+        //}
 
         return row;
 

@@ -2,7 +2,10 @@ package scarecrow.beta.mcenetwork;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -146,6 +149,31 @@ public class ChatActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(chat_receiver, new IntentFilter("unique_name"));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(chat_receiver);
+    }
+
+    private BroadcastReceiver chat_receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("message");
+            String sender = intent.getStringExtra("sender");
+            String time = intent.getStringExtra("time");
+
+            chats.add(new TwoLineStructure(message, sender, time));
+            adapter.notifyDataSetChanged();
+            scrollToBottom();
+        }
+    };
+
     class LoadChats extends AsyncTask<String, String, String> {
 
         ProgressDialog pDialog;
@@ -219,7 +247,7 @@ public class ChatActivity extends ActionBarActivity {
                 if(chats.size() > 0) {
 
                     adapter = new TwoLineAdapterWithList(ChatActivity.this,
-                            R.layout.twolinelist_row, chats);
+                            R.layout.twolinelist_row, sender, chats);
                     list_chats.setAdapter(adapter);
                     scrollToBottom();
 
@@ -249,9 +277,8 @@ public class ChatActivity extends ActionBarActivity {
         protected String doInBackground(String... params) {
 
             userFunctions = new UserFunctions();
-            json = userFunctions.sendMessage(sender, receiver, message_body);
+            json = userFunctions.sendMessage(receiver, receiver, message_body);
             String message, sender, date, time;
-
             try {
                 if (json.getInt(KEY_SUCCESS) != 1) {
                     error = 1;
