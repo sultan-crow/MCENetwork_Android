@@ -279,6 +279,7 @@ public class ChatActivity extends ActionBarActivity {
 
         private String KEY_SUCCESS = "success";
         private String KEY_ERROR_MSG = "error_message";
+        String check;
 
         int error = 0;
 
@@ -289,7 +290,7 @@ public class ChatActivity extends ActionBarActivity {
             json = userFunctions.sendMessage(receiver_global, sender_global, message_body,
                     role_receiver, role_sender);
 
-            String message, sender, date, time;
+            String message, sender, time;
             try {
                 if (json.getInt(KEY_SUCCESS) != 1) {
                     error = 1;
@@ -302,6 +303,7 @@ public class ChatActivity extends ActionBarActivity {
                     sender = chat.getString("sender");
                     time = new UniqueFunctions().getFormattedDateTime(chat.getString("date"),
                             chat.getString("time"));
+                    check = chat.getString("check");
 
                     chat_class = new TwoLineStructure(message, sender, time);
 

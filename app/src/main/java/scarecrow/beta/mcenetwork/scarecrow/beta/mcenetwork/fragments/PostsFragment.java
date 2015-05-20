@@ -1,8 +1,11 @@
 package scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -64,9 +68,26 @@ public class PostsFragment extends Fragment {
 
         role = db.getRole();
 
-        if(!db.checkJSON())
-           new getData().execute();
-        else {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        ConnectivityManager cm = (ConnectivityManager) getActivity()
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+
+        if(ni == null) {
+
+            Toast.makeText(getActivity(),
+                    "Can't Connect to the Internet",
+                    Toast.LENGTH_LONG).show();
+
+        } else {
+
+            if(!db.checkJSON())
+                new getData().execute();
+
+        }
+
+        if(db.checkJSON()) {
 
             try {
                 populate_listview(new JSONObject(db.getJSON()));
