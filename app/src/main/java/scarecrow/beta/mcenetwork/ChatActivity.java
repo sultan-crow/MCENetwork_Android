@@ -32,6 +32,7 @@ import java.util.List;
 
 import library.DatabaseHandler;
 import library.TwoLineAdapter;
+import library.TwoLineAdapterWithList;
 import library.TwoLineStructure;
 import library.UniqueFunctions;
 import library.UserFunctions;
@@ -46,8 +47,10 @@ public class ChatActivity extends ActionBarActivity {
     Button b;
     String message_body;
 
-    TwoLineAdapter adapter;
-    TwoLineStructure chats[];
+    int num;
+
+    TwoLineAdapterWithList adapter;
+    ArrayList<TwoLineStructure> chats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,9 +181,11 @@ public class ChatActivity extends ActionBarActivity {
                 } else {
 
                     JSONArray chats_array = json.getJSONArray("chats");
-                    chats = new TwoLineStructure[chats_array.length()];
+                    num = json.getInt("num");
 
-                    for (int i = 0; i < chats_array.length(); i++) {
+                    chats = new ArrayList<TwoLineStructure>();
+
+                    for (int i = num - 1; i >= 0; i--) {
 
                         message = chats_array.getJSONObject(i)
                                 .getString("message");
@@ -190,7 +195,7 @@ public class ChatActivity extends ActionBarActivity {
                                 chats_array.getJSONObject(i).getString("date"),
                                 chats_array.getJSONObject(i).getString("time"));
 
-                        chats[i] = new TwoLineStructure(message, sender, time);
+                        chats.add(new TwoLineStructure(message, sender, time));
 
                     }
 
@@ -211,9 +216,9 @@ public class ChatActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), params, Toast.LENGTH_LONG).show();
             } else {
 
-                if(chats.length > 0) {
+                if(chats.size() > 0) {
 
-                    adapter = new TwoLineAdapter(ChatActivity.this,
+                    adapter = new TwoLineAdapterWithList(ChatActivity.this,
                             R.layout.twolinelist_row, chats);
                     list_chats.setAdapter(adapter);
                     scrollToBottom();
@@ -257,13 +262,10 @@ public class ChatActivity extends ActionBarActivity {
 
                     message = chat.getString("message");
                     sender = chat.getString("sender");
-                    date = chat.getString("date");
-                    time = chat.getString("time");
+                    time = new UniqueFunctions().getFormattedDateTime(chat.getString("date"),
+                            chat.getString("time"));
 
-                    chat_class = new TwoLineStructure(
-                            message,
-                            sender,
-                            new UniqueFunctions().getFormattedDateTime(date, time));
+                    chat_class = new TwoLineStructure(message, sender, time);
 
                 }
             } catch (JSONException e) {
@@ -279,11 +281,8 @@ public class ChatActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), params, Toast.LENGTH_LONG).show();
             } else {
 
-                List<TwoLineStructure> chats_list = Arrays.asList(chats);
-                chats_list.add(chat_class);
-                chats = new TwoLineStructure[chats.length];
-                chats = chats_list.toArray(chats);
-
+                message_edittext.setText("");
+                chats.add(chat_class);
                 adapter.notifyDataSetChanged();
                 scrollToBottom();
 
