@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -24,6 +26,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import library.DatabaseHandler;
+import library.UniqueFunctions;
 import library.UserFunctions;
 import scarecrow.beta.mcenetwork.R;
 
@@ -110,9 +113,18 @@ public class ProfileFragment extends Fragment {
         }
 
         name_field.setText(name);
-        dob_field.setText("Born on: " + dob);
+        dob_field.setText("Born on: " + new UniqueFunctions().getFormattedDate(dob));
         gender_field.setText(gender);
         email_field.setText(email);
+
+        String path = Environment.getExternalStorageDirectory() + "scarecrow.beta.mcenetwork/pic.jpg";
+        File file = new File(path);
+        if(file.exists()) {
+            Bitmap bmp = BitmapFactory.decodeFile(path);
+            image_field.setImageBitmap(bmp);
+        }
+        else
+            image_field.setImageResource(R.drawable.anonymous);
 
         if(role == 0)
             year_field.setText(year);

@@ -45,7 +45,7 @@ public class ResearchFragment extends Fragment {
                 researches = new String[research.length()];
 
                 for(int i = 0; i < research.length(); i ++)
-                    researches[i] = research.getJSONObject(i).getString("r_text");
+                    researches[i] = research.getJSONObject(i).getString("title");
 
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                         getActivity(),

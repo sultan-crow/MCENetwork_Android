@@ -3,6 +3,8 @@ package scarecrow.beta.mcenetwork;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -16,8 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
 
 import library.UniqueFunctions;
 import library.UserFunctions;
@@ -27,7 +34,8 @@ public class ProfileActivity extends ActionBarActivity {
 
     String id, role;
     TextView name_textview, gender_textview, email_textview, dob_textview,
-            group_qualification_textview, year_designation_textview, username_textview;
+            group_qualification_textview, year_designation_textview,
+            username_textview, research_header_textview, research_textview;
 
     ImageView imageView;
 
@@ -58,6 +66,8 @@ public class ProfileActivity extends ActionBarActivity {
         } else {
             group_qualification_textview = (TextView) findViewById(R.id.qualification);
             year_designation_textview = (TextView) findViewById(R.id.designation);
+            research_header_textview = (TextView) findViewById(R.id.research_header);
+            research_textview = (TextView) findViewById(R.id.research);
         }
 
         ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
@@ -125,6 +135,13 @@ public class ProfileActivity extends ActionBarActivity {
 
         int error = 0;
 
+        String name, email, gender, dob, pic, username, year, group, designation,
+                qualification, research_string = "";
+
+        Bitmap b;
+
+        boolean image_bool = false;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -145,8 +162,47 @@ public class ProfileActivity extends ActionBarActivity {
                 if(json.getInt(KEY_SUCCESS) != 1) {
                     error = 1;
                     return json.getString(KEY_ERROR_MSG);
+                } else {
+                    JSONObject profile = json.getJSONObject("profile");
+                    name = profile.getString("name");
+                    email = profile.getString("email");
+                    gender = profile.getString("gender");
+                    dob = profile.getString("dob");
+                    pic = profile.getString("pic");
+                    username = profile.getString("username");
+
+                    if(role.equals("0")) {
+                        year = profile.getString("year");
+                        group = profile.getString("group");
+                    } else {
+                        designation = profile.getString("designation");
+                        qualification = profile.getString("qualification");
+                    }
+
+                    if(pic.length() > 2) {
+
+                        if(!pic.substring(0, 4).matches("http")) {
+                            if(role.equals("0"))
+                                pic = "http://dcetech.com/sagnik/social_network/web/students/upload/"
+                                        + pic;
+                            else
+                                pic = "http://dcetech.com/sagnik/social_network/web/upload/" + pic;
+                        }
+                        image_bool = true;
+                        InputStream in = new java.net.URL(pic).openStream();
+                        b = BitmapFactory.decodeStream(in);
+                    }
+
+                    JSONArray research = json.getJSONArray("research");
+                    for(int i = 0; i < research.length(); i ++)
+                        research_string = research_string
+                                + research.getString(i) + "\n";
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -161,38 +217,33 @@ public class ProfileActivity extends ActionBarActivity {
             if(error == 1) {
                 Toast.makeText(getApplicationContext(), params, Toast.LENGTH_LONG).show();
             } else {
-                try {
 
-                    JSONObject profile = json.getJSONObject("profile");
-                    String name = profile.getString("name");
-                    String email = profile.getString("email");
-                    String gender = profile.getString("gender");
-                    String dob = profile.getString("dob");
-                    String pic = profile.getString("pic");
-                    String username = profile.getString("username");
+                name_textview.setText(name);
+                email_textview.setText(email);
+                dob_textview.setText("B'Day: " + uniqueFunctions.getFormattedDate(dob));
+                gender_textview.setText(uniqueFunctions.getFullGender(gender));
+                username_textview.setText(username);
 
-                    name_textview.setText(name);
-                    email_textview.setText(email);
-                    dob_textview.setText("B'Day: " + uniqueFunctions.getFormattedDate(dob));
-                    gender_textview.setText(uniqueFunctions.getFullGender(gender));
-                    username_textview.setText(username);
+                if(role.equals("0")) {
 
-                    if(role.equals("0")) {
+                    year_designation_textview.setText("Year: " +
+                            uniqueFunctions.getNumberWithSubscript(year));
+                    group_qualification_textview.setText("Group: " + group);
 
-                        year_designation_textview.setText("Year: " +
-                                uniqueFunctions.getNumberWithSubscript(profile.getString("year")));
-                        group_qualification_textview.setText("Group: " + profile.getString("group"));
-
-                    } else {
-                        year_designation_textview.setText(
-                                profile.getString("designation"));
-                        group_qualification_textview.setText(
-                                "Qualification: " + profile.getString("qualification"));
+                } else {
+                    year_designation_textview.setText(designation);
+                    group_qualification_textview.setText(qualification);
+                    if(!research_string.matches("")) {
+                        research_header_textview.setVisibility(View.VISIBLE);
+                        research_textview.setText(research_string);
                     }
-
-                } catch (JSONException e) {
-                    Log.d("Error!", e.toString());
                 }
+
+                if(image_bool)
+                    imageView.setImageBitmap(b);
+                else
+                    imageView.setImageResource(R.drawable.anonymous);
+
             }
         }
     }

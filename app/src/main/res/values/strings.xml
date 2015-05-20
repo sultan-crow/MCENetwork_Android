@@ -61,5 +61,7 @@
     <string name="title_activity_chat">ChatActivity</string>
     <string name="send">>></string>
     <string name="start_conversation">Start Conversation</string>
+    <string name="research_header">Research:</string>
+    <string name="abstract_header">Abstract:</string>
 
 </resources>

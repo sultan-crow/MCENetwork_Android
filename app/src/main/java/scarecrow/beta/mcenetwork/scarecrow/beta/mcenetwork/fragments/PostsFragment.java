@@ -2,7 +2,9 @@ package scarecrow.beta.mcenetwork.scarecrow.beta.mcenetwork.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,17 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import library.DatabaseHandler;
 import library.TwoLineAdapter;
@@ -118,7 +131,9 @@ public class PostsFragment extends Fragment {
                         }
                         Intent post_intent = new Intent(getActivity(), PostActivity.class);
                         post_intent.putExtra("id", post_id);
+
                         startActivity(post_intent);
+
                     }
                 });
 
@@ -161,6 +176,7 @@ public class PostsFragment extends Fragment {
 
             userFunctions = new UserFunctions();
             json = userFunctions.getUserData(getActivity(), role);
+            int count;
 
             try {
                 if(json.getInt(KEY_SUCCESS) != 1) {
@@ -170,8 +186,52 @@ public class PostsFragment extends Fragment {
                     DatabaseHandler db = new DatabaseHandler(getActivity());
                     db.putJSON(json.toString());
                     db.close();
+
+                    String pic = json.getJSONObject("user").getString("picture");
+
+                    File check = new File(Environment.getExternalStorageDirectory()
+                            + "scarecrow.beta.mcenetwork/pic.jpg");
+                    if (!check.exists()) {
+                        if (pic.length() > 2) {
+
+                            if (!pic.substring(0, 4).matches("http")) {
+                                if (role == 0)
+                                    pic = "http://dcetech.com/sagnik/social_network/web/students/upload/"
+                                            + pic;
+                                else
+                                    pic = "http://dcetech.com/sagnik/social_network/web/upload/" + pic;
+                            }
+                        }
+
+                        URL url = new URL((String) pic);
+                        URLConnection conexion = url.openConnection();
+                        conexion.connect();
+                        String targetFileName = "pic" + ".jpg";//Change name and subname
+                        int lenghtOfFile = conexion.getContentLength();
+                        String PATH = Environment.getExternalStorageDirectory()
+                                + "scarecrow.beta.mcenetwork/";
+                        File folder = new File(PATH);
+                        if (!folder.exists()) {
+                            folder.mkdir();//If there is no folder it will be created.
+                        }
+                        InputStream input = new BufferedInputStream(url.openStream());
+                        OutputStream output = new FileOutputStream(PATH + targetFileName);
+                        byte data[] = new byte[1024];
+                        while ((count = input.read(data)) != -1) {
+                            output.write(data, 0, count);
+                        }
+                        output.flush();
+                        output.close();
+                        input.close();
+                    }
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
