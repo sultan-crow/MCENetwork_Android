@@ -53,9 +53,9 @@ public class PostsFragment extends Fragment {
 
     UniqueFunctions uniqueFunctions;
 
-    public PostsFragment(int year) {
+    public PostsFragment() {
+        super();
         uniqueFunctions = new UniqueFunctions();
-        this.year = year;
     }
 
     @Override
@@ -67,6 +67,10 @@ public class PostsFragment extends Fragment {
         DatabaseHandler db = new DatabaseHandler(getActivity());
 
         role = db.getRole();
+        if(role == 0)
+            year = db.getYear();
+        else
+            year = 5;
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         ConnectivityManager cm = (ConnectivityManager) getActivity()

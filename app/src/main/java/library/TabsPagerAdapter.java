@@ -32,7 +32,7 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
             switch (position) {
                 case 0:
-                    return new PostsFragment(year);
+                    return new PostsFragment();
                 case 1:
                     return new ClassmatesFragment();
                 case 2:
@@ -45,15 +45,15 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
         else {
             switch (position) {
                 case 0:
-                    return new PostsFragment(5);
+                    return new PostsFragment();
                 case 1:
-                    return new PostsFragment(4);
+                    return new PostsFragment();
                 case 2:
-                    return new PostsFragment(3);
+                    return new PostsFragment();
                 case 3:
-                    return new PostsFragment(2);
+                    return new PostsFragment();
                 case 4:
-                    return new PostsFragment(1);
+                    return new PostsFragment();
                 case 5:
                     return new FacultyFragment();
                 case 6:
